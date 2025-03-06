@@ -13,13 +13,19 @@
     <div class="text">Используется команда ping, с помощью которой найден  IP-адресс сервера kubsu.ru: 185.13.84.92 </div>
   </div>
   <div class="step">
-    <img src="Снимок экрана (5).png" class="screenshot">
+    <img src="im2.png" class="screenshot">
     <div class="text">nslookup — это команда, которая запрашивает DNS-сервер для получения IP-адреса по доменному имени (или наоборот), в данном случае команда возвращает А-записи kubsu.ru и kubsu-dev.ru: для kubsu.ru это 185.13.84.92, для kubsu-dev.ru - 212.192.134.135.
-    (А-запись связывает доменное имя с IPv4-адресом)</div>
+    (А-запись Adress Record связывает доменное имя с IPv4-адресом)</div>
   </div>
   <div class="step">
-    <img src="Снимок экрана (6).png" class="screenshot">
-    <div class="text"></div>
+    <img src="im3.png" class="screenshot">
+    <div class="text">MX-записи(Mail Exchange) указывают почтовые сервера, которые обрабатывают электронную почту для домена. Для kubsu.ru это
+    <ul>
+        <li>mx2.kubannet.ru с приоритетом 10</li>
+        <li>mx.kubannet.ru с приоритетом 20</li>
+        <li>mx.kubsu.ru с приоритетом 50</li>
+    </ul>
+    Для домена kubsu-dev.ru не настроены mx-записи - почта не будет доставляться. Но т.к. сам домен существует, то сервер вернул информацию о DNS-зоне.</div>
   </div>
   
 </body>
