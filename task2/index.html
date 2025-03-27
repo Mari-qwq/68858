@@ -9,9 +9,40 @@
 </head>
 <body>
   <div class="step">
-    <img src="im21.png" class="screenshot">
+    <img src="im20.png" class="screenshot">
     <div class="text">С помощью программы Putty соединимся по RAW через порт 80 с учебным сервером.</div>
   </div>
-  
+    <div class="step">
+    <img src="im21.png" class="screenshot">
+    <div class="text">С помощью GET в протоколе HTTP 1.0 получим главную страницу. По ответу 200 ОК видим что запрос успешно выполненю</div>
+  </div>
+    <div class="step">
+         <img src="im202.png" class="screenshot">
+    <div class="text">Создаю внутренню страницу и с помощью gitpull переношу ее на сервер</div>
+    <img src="im22.png" class="screenshot">
+    <div class="text">С помощью GET в протоколе HTTP 1.1 получим внутреннюю страницу. По ответу 200 ОК видим что запрос успешно выполненю</div>
+  </div>
+    
+    <div class="step">
+    <img src="im23.png" class="screenshot">
+    <div class="text">Определим размер файла file.tar.gz. Для этого используем метод HEAD. Метод HEAD в HTTP запрашивает только заголовки HTTP-ответа, но не само тело ответа. Размер файла: 119674 байт </div>
+  </div>
+   <div class="step">
+    <img src="im24.png" class="screenshot">
+    <div class="text">Определяем медиа тип файла с помощью head. Content-Type сообщает о медиатипе файла image.png: image/png</div>
+  </div>
+     <div class="step">
+    <img src="im25.png" class="screenshot">
+    <div class="text">Отправляем комментарий на сервер по адресу /index.php. Используем метод POST, по данному коду комментарий отправляется ввиде name=имя&comment=комментарий и записывается в файл comment.txt</div>
+         <img src="im205.png" class="screenshot">
+  </div>
+     <div class="step">
+    <img src="im26.png" class="screenshot">
+    <div class="text">Получим первые 100 байт файла /file.tar.gz c помощью HEAD. Для этого укажем Range: bytes=0-99 </div>
+  </div>
+     <div class="step">
+    <img src="im27.png" class="screenshot">
+    <div class="text">Определим кодировку ресурса /index.php. charset=UTF-8 сообщает браузеру, что для кодирования тела HTTP ответа использовалась кодировка UTF-8. </div>
+  </div>
   
 </body>
