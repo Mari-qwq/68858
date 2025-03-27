@@ -4,7 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $comment = htmlspecialchars($_POST['comment']);
 
     if (!empty($name) && !empty($comment)) {
-        // Сохранение в файл (можно заменить на запись в БД)
+        
         $file = fopen("comments.txt", "a");
         fwrite($file, "Имя: $name\nКомментарий: $comment\n---\n");
         fclose($file);
