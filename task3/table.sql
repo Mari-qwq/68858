@@ -3,7 +3,7 @@ CREATE TABLE users (
     fio VARCHAR(150) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    dob DATE NOT NULL,
+    year DATE NOT NULL,
     gender ENUM('male', 'female') NOT NULL,
     bio TEXT NOT NULL
 );
