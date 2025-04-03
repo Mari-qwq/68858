@@ -4,6 +4,7 @@ body {
     padding: 0;
     background-color: #dceefb;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -48,4 +49,19 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #3498db;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Сообщение об успехе */
+.success {
+    color: green;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 15px;
 }
