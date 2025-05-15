@@ -1,10 +1,5 @@
 <?php
-// index.php
 header('Content-Type: text/html; charset=UTF-8');
-
-function sanitize($data) {
-    return htmlspecialchars(stripslashes(trim($data)));
-}
 
 $errors = [];
 $values = [
@@ -18,76 +13,127 @@ $values = [
     'agreement' => ''
 ];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // FIO
+function sanitize($data) {
+    return htmlspecialchars(stripslashes(trim($data)));
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (!empty($_COOKIE['errors'])) {
+        $errors = unserialize($_COOKIE['errors']);
+        setcookie('errors', '', time() - 3600, '/');
+    }
+
+    if (!empty($_COOKIE['values'])) {
+        $values = unserialize($_COOKIE['values']);
+        setcookie('values', '', time() - 3600, '/');
+    } else {
+        foreach ($values as $key => $_) {
+            if (!empty($_COOKIE['saved_' . $key])) {
+                $values[$key] = in_array($key, ['languages']) 
+                    ? unserialize($_COOKIE['saved_' . $key]) 
+                    : $_COOKIE['saved_' . $key];
+            }
+        }
+    }
+
+    include('form.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $values['fio'] = sanitize($_POST['fio']);
-    if (empty($values['fio']) || !preg_match('/^[a-zA-Zа-яА-Я\s-]+$/u', $values['fio'])) {
-        $errors['fio'] = 'ФИО может содержать только буквы, пробелы и дефис.';
+    if (empty($values['fio'])) {
+        $errors['fio'] = 'Заполните имя.';
+    } elseif (!preg_match("/^[a-zA-Zа-яА-Я\s]+$/u", $values['fio'])) {
+        $errors['fio'] = 'ФИО должно содержать только буквы и пробелы.';
+    } elseif (strlen($values['fio']) > 150) {
+        $errors['fio'] = 'ФИО не должно превышать 150 символов.';
     }
 
-    // Phone
     $values['phone'] = sanitize($_POST['phone']);
-    if (empty($values['phone']) || !preg_match('/^\+?[0-9\-\s\(\)]+$/', $values['phone'])) {
-        $errors['phone'] = 'Телефон может содержать только цифры, пробелы, скобки и знак +.';
-    }
+    if (empty($values['phone']) ){
+        $errors['phone'] = 'Введите номер.';
+    }elseif( !preg_match("/^[0-9\+\-\(\)\s]+$/", $values['phone'])){
+    $errors['phone'] = 'Номер телефона может содержать только цифры 0-9, +, -, (, ).';
+}
 
-    // Email
     $values['email'] = sanitize($_POST['email']);
-    if (empty($values['email']) || !preg_match('/^[\w\.\-]+@[\w\-]+\.[a-z]{2,6}$/i', $values['email'])) {
-        $errors['email'] = 'Неверный формат email.';
+    if (empty($values['email']) || !filter_var($values['email'], FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Некорректный email.';
     }
 
-    // Year
     $values['year'] = sanitize($_POST['year']);
-    if (empty($values['year']) || !preg_match('/^\d{4}$/', $values['year'])) {
-        $errors['year'] = 'Введите корректный год рождения (4 цифры).';
+    if (empty($values['year']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $values['year'])) {
+        $errors['year'] = 'Введите корректную дату рождения.';
     }
 
-    // Gender
     $values['gender'] = $_POST['gender'] ?? '';
-    if (!in_array($values['gender'], ['male', 'female'])) {
+    if (empty($values['gender']) || !in_array($values['gender'], ['male', 'female'])) {
         $errors['gender'] = 'Выберите пол.';
     }
 
-    // Languages
     $values['languages'] = $_POST['languages'] ?? [];
-    $valid_languages = ['english', 'german', 'french'];
-    foreach ($values['languages'] as $lang) {
-        if (!in_array($lang, $valid_languages)) {
-            $errors['languages'] = 'Недопустимые значения в списке языков.';
-            break;
-        }
+    if (empty($values['languages']) || !is_array($values['languages'])) {
+        $errors['languages'] = 'Выберите хотя бы один язык программирования.';
     }
 
-    // Bio
     $values['bio'] = sanitize($_POST['bio']);
-    if (!empty($values['bio']) && !preg_match('/^[^<>]{0,1024}$/u', $values['bio'])) {
-        $errors['bio'] = 'Биография содержит недопустимые символы или слишком длинная.';
+    if (empty($values['bio'])) {
+        $errors['bio'] = 'Заполните биографию.';
     }
 
-    // Agreement
-    $values['agreement'] = $_POST['agreement'] ?? '';
-    if ($values['agreement'] !== 'on') {
-        $errors['agreement'] = 'Вы должны согласиться с условиями.';
+    if (empty($_POST['agreement'])) {
+        $errors['agreement'] = 'Необходимо согласиться с условиями.';
+    } else {
+        $values['agreement'] = 'checked';
     }
 
     if (!empty($errors)) {
-        // Сохраняем ошибки и значения в cookies до конца сессии
-        setcookie('errors', json_encode($errors), 0, '/');
-        setcookie('values', json_encode($values), 0, '/');
-        header('Location: form.php');
-        exit();
-    } else {
-        // Успешно: сохраняем значения в куки на год, удаляем ошибки
-        setcookie('errors', '', time() - 3600, '/');
-        foreach ($values as $key => $value) {
-            if (is_array($value)) {
-                setcookie("values[$key]", json_encode($value), time() + 365*24*60*60, '/');
-            } else {
-                setcookie("values[$key]", $value, time() + 365*24*60*60, '/');
-            }
-        }
-        header('Location: form.php');
+        setcookie('errors', serialize($errors), 0, '/');
+        setcookie('values', serialize($values), 0, '/');
+        header('Location: index.php');
         exit();
     }
+
+    // Подключение и запись в БД
+    $user = 'u68858';
+    $pass = '5450968';
+    try {
+        $db = new PDO('mysql:host=localhost;dbname=u68858', $user, $pass, [
+            PDO::ATTR_PERSISTENT => true,
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
+
+        $stmt = $db->prepare("INSERT INTO users (fio, phone, email, year, gender, bio) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $values['fio'], $values['phone'], $values['email'], 
+            $values['year'], $values['gender'], $values['bio']
+        ]);
+        $user_id = $db->lastInsertId();
+
+        foreach ($values['languages'] as $language) {
+            $stmt_lang = $db->prepare("SELECT lang_id FROM langs WHERE lang_name = ?");
+            $stmt_lang->execute([$language]);
+            $lang_result = $stmt_lang->fetch(PDO::FETCH_ASSOC);
+            if ($lang_result) {
+                $stmt_user_lang = $db->prepare("INSERT INTO users_languages (user_id, lang_id) VALUES (?, ?)");
+                $stmt_user_lang->execute([$user_id, $lang_result['lang_id']]);
+            }
+        }
+
+        foreach ($values as $key => $val) {
+            setcookie('saved_' . $key, is_array($val) ? serialize($val) : $val, time() + 365*24*60*60, '/');
+        }
+
+        setcookie('success', '1', time() + 5, '/');
+    } catch (PDOException $e) {
+        setcookie('errors', serialize(['db' => $e->getMessage()]), 0, '/');
+    }
+
+    header('Location: index.php');
+    exit();
+    include 'form.php';
 }
+
+
+?>
