@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Добро пожаловать</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eecaca;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+        button {
+            border-radius: 5px;
+            background: #ec9a9a;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: #743232;
+            
+        }
+        .container{
+            background: rgb(255, 236, 237);
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Добро пожаловать!</h1>
+
+    <div class="button-container">
+        <form action="login.php">
+            <button type="submit">Войти</button>
+        </form>
+        <form action="form.php">
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
