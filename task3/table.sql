@@ -20,4 +20,4 @@ CREATE TABLE users_languages (
   lang_id INTEGER,
   PRIMARY KEY (user_id, lang_id), 
   FOREIGN KEY (user_id) REFERENCES users (user_id),
-  FOREIGN KEY (lang_id) REFERENCES langs (lang_id) );
+  FOREIGN KEY (lang_id) REFERENCES langs (lang_id) on delete cascade);
